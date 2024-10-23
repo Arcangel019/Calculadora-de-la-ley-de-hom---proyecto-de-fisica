@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Calculadora de Ley de Ohm</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .calculation-card {
+            transition: transform 0.2s;
+        }
+        .calculation-card:hover {
+            transform: scale(1.02);
+        }
+        .bg-ohm {
+            background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <!-- Encabezado -->
+        <div class="text-center mb-5">
+            <h1 class="display-4">
+                <i class="fas fa-bolt text-warning"></i> 
+                Calculadora de Ley de Ohm
+            </h1>
+            <p class="lead text-muted">V = I × R</p>
+        </div>
+
+        <div class="row">
+            <!-- Formulario de Cálculo -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-ohm text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-calculator"></i> 
+                            Nuevo Cálculo
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/calculate}" th:object="${calculation}" method="post" class="needs-validation" novalidate>
+                            <!-- Voltaje -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-plug text-primary"></i> 
+                                    Voltaje (V)
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" th:field="*{voltage}" class="form-control" step="0.01" placeholder="Ingrese voltaje">
+                                    <span class="input-group-text">V</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Corriente -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-bolt text-warning"></i> 
+                                    Corriente (I)
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" th:field="*{current}" class="form-control" step="0.01" placeholder="Ingrese corriente">
+                                    <span class="input-group-text">A</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Resistencia -->
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-microchip text-danger"></i> 
+                                    Resistencia (R)
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" th:field="*{resistance}" class="form-control" step="0.01" placeholder="Ingrese resistencia">
+                                    <span class="input-group-text">Ω</span>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-equals"></i> 
+                                Calcular
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resultados y Fórmulas -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-clipboard-check"></i> 
+                            Resultados
+                        </h3>
+                    </div>
+                    <div class="card-body" th:if="${calculation != null && (calculation.voltage != null || calculation.current != null || calculation.resistance != null)}">
+                        <div class="row g-3">
+                            <div class="col-sm-4">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center">
+                                        <h5>Voltaje</h5>
+                                        <p class="h3" th:text="${calculation.voltage != null ? #numbers.formatDecimal(calculation.voltage, 1, 2) + ' V' : '-'}">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card bg-warning text-dark">
+                                    <div class="card-body text-center">
+                                        <h5>Corriente</h5>
+                                        <p class="h3" th:text="${calculation.current != null ? #numbers.formatDecimal(calculation.current, 1, 2) + ' A' : '-'}">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card bg-danger text-white">
+                                    <div class="card-body text-center">
+                                        <h5>Resistencia</h5>
+                                        <p class="h3" th:text="${calculation.resistance != null ? #numbers.formatDecimal(calculation.resistance, 1, 2) + ' Ω' : '-'}">-</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fórmulas -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-square-root-alt"></i> 
+                            Fórmulas
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-sm-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6>Voltaje (V)</h6>
+                                        <p class="mb-0">V = I × R</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6>Corriente (I)</h6>
+                                        <p class="mb-0">I = V ÷ R</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h6>Resistencia (R)</h6>
+                                        <p class="mb-0">R = V ÷ I</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historial de Cálculos -->
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-secondary text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-history"></i> 
+                            Historial de Cálculos
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Voltaje (V)</th>
+                                        <th>Corriente (A)</th>
+                                        <th>Resistencia (Ω)</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="calc : ${history}">
+                                        <td th:text="${#temporals.format(calc.calculationDate, 'dd/MM/yyyy HH:mm')}">01/01/2024</td>
+                                        <td th:text="${calc.voltage != null ? #numbers.formatDecimal(calc.voltage, 1, 2) + ' V' : '-'}">-</td>
+                                        <td th:text="${calc.current != null ? #numbers.formatDecimal(calc.current, 1, 2) + ' A' : '-'}">-</td>
+                                        <td th:text="${calc.resistance != null ? #numbers.formatDecimal(calc.resistance, 1, 2) + ' Ω' : '-'}">-</td>
+                                        <td>
+                                            <form th:action="@{/delete/{id}(id=${calc.id})}" method="post" style="display: inline;">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validación de formulario
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+</body>
+</html>
