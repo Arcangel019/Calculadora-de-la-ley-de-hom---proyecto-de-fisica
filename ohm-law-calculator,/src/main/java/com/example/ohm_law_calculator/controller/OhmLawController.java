@@ -1,6 +1,5 @@
 package com.example.ohm_law_calculator.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +29,8 @@ public class OhmLawController {
         return "calculator";
     }
 
-    @DeleteMapping("/delete/{id}")
+
+    @PostMapping("/delete/{id}")
     public String deleteCalculation(@PathVariable Long id) {
         ohmLawService.deleteCalculation(id);
         return "redirect:/";
